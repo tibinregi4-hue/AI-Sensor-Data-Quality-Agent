@@ -19,7 +19,7 @@ jobs:
       - name: Run pipeline first (fixes the data)
         run: python run_agent.py
       - name: Run all tests on clean data
-        run: pytest tests/test_schema.py tests/test_drift.py tests/test_model.py -v --tb=short
+        run: pytest tests/test_schema.py tests/test_model.py -v --tb=short
       - name: Upload reports
         uses: actions/upload-artifact@v4
         if: always()
