@@ -72,7 +72,8 @@ def main(data_path: str | None = None):
     print(f"\n  {_bold('[1/5] Validating data quality...')}")
     validator       = DataValidator(df, config)
     validation_before = validator.validate_all()
-
+    # Save cleaned data back to CSV so pytest can use it
+    clean_df.to_csv(data_path, index=False)
     reporter = ReportGenerator(
         validation_before=validation_before,
         agent_diagnosis={},
