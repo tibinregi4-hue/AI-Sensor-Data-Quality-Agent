@@ -254,4 +254,4 @@ infineon_data_agent/
 ---
 
 *Built by **Tibin Regi** | BSc Robotics & AI, University of Klagenfurt*  
-*Demonstration project for Infineon Technologies AI & Data Engineering Internship*
+*Demonstration project for semi-conductor industries- AI & Data Engineering Internship*
