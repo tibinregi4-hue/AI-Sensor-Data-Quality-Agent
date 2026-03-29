@@ -1,0 +1,38 @@
+name: Data Quality CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run data quality tests
+        run: pytest tests/ -v --tb=short
+
+      - name: Run full pipeline
+        run: python run_agent.py
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+      - name: Upload quality reports
+        uses: actions/upload-artifact@v4
+        if: always()          # upload even if tests fail
+        with:
+          name: quality-reports
+          path: reports/

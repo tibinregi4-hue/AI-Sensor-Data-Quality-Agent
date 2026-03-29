@@ -1,0 +1,521 @@
+{
+  "metadata": {
+    "generated_at": "2026-03-29T21:56:33",
+    "data_path": "data\\sample_sensor_data.csv",
+    "author": "Tibin Regi",
+    "project": "AI-Powered Data Quality Agent"
+  },
+  "validation_before": {
+    "issues": [
+      {
+        "check": "nulls",
+        "message": "Column 'temperature' has 6.5% null values (threshold: 5.0%)",
+        "severity": "critical",
+        "detail": {
+          "column": "temperature",
+          "null_pct": 6.50049850448654,
+          "null_count": 326
+        },
+        "fix_hint": "fix_nulls"
+      },
+      {
+        "check": "ranges",
+        "message": "Column 'pressure' has 6 values outside [900, 1100]",
+        "severity": "critical",
+        "detail": {
+          "column": "pressure",
+          "min_allowed": 900,
+          "max_allowed": 1100,
+          "violations": 6,
+          "actual_min": -50.0,
+          "actual_max": 1800.0
+        },
+        "fix_hint": "remove_outliers"
+      },
+      {
+        "check": "duplicates",
+        "message": "Found 15 exact duplicate rows",
+        "severity": "critical",
+        "detail": {
+          "count": 15
+        },
+        "fix_hint": "remove_duplicates"
+      },
+      {
+        "check": "outliers",
+        "message": "Column 'pressure' has 6 outliers beyond 3.0\u03c3",
+        "severity": "warning",
+        "detail": {
+          "column": "pressure",
+          "count": 6,
+          "mean": 1013.2555,
+          "std": 31.5701
+        },
+        "fix_hint": "remove_outliers"
+      },
+      {
+        "check": "outliers",
+        "message": "Column 'voltage' has 8 outliers beyond 3.0\u03c3",
+        "severity": "warning",
+        "detail": {
+          "column": "voltage",
+          "count": 8,
+          "mean": 3.3004,
+          "std": 0.1618
+        },
+        "fix_hint": "remove_outliers"
+      }
+    ],
+    "summary": {
+      "schema": {
+        "check": "schema",
+        "columns": [
+          "timestamp",
+          "temperature",
+          "pressure",
+          "humidity",
+          "voltage",
+          "sensor_id",
+          "status"
+        ],
+        "missing": [],
+        "extra": [
+          "voltage",
+          "status",
+          "humidity",
+          "sensor_id"
+        ],
+        "dtypes": {
+          "timestamp": "object",
+          "temperature": "float64",
+          "pressure": "float64",
+          "humidity": "float64",
+          "voltage": "float64",
+          "sensor_id": "object",
+          "status": "object"
+        },
+        "status": "pass"
+      },
+      "nulls": {
+        "check": "nulls",
+        "null_pcts": {
+          "timestamp": 0.0,
+          "temperature": 6.5,
+          "pressure": 3.19,
+          "humidity": 0.0,
+          "voltage": 0.0,
+          "sensor_id": 0.0,
+          "status": 0.0
+        },
+        "failing_cols": [
+          "temperature"
+        ],
+        "status": "fail"
+      },
+      "ranges": {
+        "check": "ranges",
+        "rules": {
+          "temperature": [
+            -50,
+            60
+          ],
+          "pressure": [
+            900,
+            1100
+          ]
+        },
+        "violations": {
+          "pressure": 6
+        },
+        "status": "fail"
+      },
+      "duplicates": {
+        "check": "duplicates",
+        "count": 15,
+        "status": "fail"
+      },
+      "outliers": {
+        "check": "outliers",
+        "counts": {
+          "temperature": 0,
+          "pressure": 6,
+          "humidity": 0,
+          "voltage": 8
+        },
+        "sigma": 3.0,
+        "status": "warning"
+      },
+      "drift": {
+        "check": "drift",
+        "details": {
+          "temperature": {
+            "mean_first": 22.4974,
+            "mean_second": 22.7052,
+            "shift_sigma": 0.038
+          },
+          "pressure": {
+            "mean_first": 1013.006,
+            "mean_second": 1013.5065,
+            "shift_sigma": 0.017
+          },
+          "humidity": {
+            "mean_first": 50.2972,
+            "mean_second": 50.593,
+            "shift_sigma": 0.025
+          },
+          "voltage": {
+            "mean_first": 3.3011,
+            "mean_second": 3.2997,
+            "shift_sigma": 0.008
+          }
+        },
+        "flagged": [],
+        "status": "pass"
+      }
+    },
+    "passed": false,
+    "shape": [
+      5015,
+      7
+    ],
+    "critical_count": 3,
+    "warning_count": 2
+  },
+  "agent_diagnosis": {
+    "diagnosis": "High severity \u2014 identified issues: 15 duplicate rows; 6 bad pressure values; nulls in ['temperature']; 14 outliers across ['pressure', 'voltage'].",
+    "fix_plan": [
+      {
+        "fix": "remove_duplicates",
+        "reason": "Remove 15 exact duplicate rows to prevent data leakage."
+      },
+      {
+        "fix": "fix_range_violations",
+        "column": "pressure",
+        "lo": 900,
+        "hi": 1100,
+        "reason": "Fix 6 pressure values outside physical range [900, 1100] hPa."
+      },
+      {
+        "fix": "fix_nulls",
+        "columns": [
+          "temperature"
+        ],
+        "reason": "Median-impute missing values (temperature: 6.5%)."
+      },
+      {
+        "fix": "remove_outliers",
+        "columns": [
+          "pressure",
+          "voltage"
+        ],
+        "sigma": 3.0,
+        "reason": "Clip 14 outlier values beyond 3.0\u03c3."
+      }
+    ],
+    "severity": "high",
+    "mode": "rule_based"
+  },
+  "fix_report": {
+    "actions": [
+      {
+        "action": "remove_duplicates",
+        "removed": 15
+      },
+      {
+        "action": "fix_range_violations",
+        "column": "pressure",
+        "fixed": 6,
+        "range": [
+          900,
+          1100
+        ],
+        "imputed_with": 1013.125
+      },
+      {
+        "action": "fix_nulls",
+        "column": "temperature",
+        "filled": 325,
+        "value": 23.38,
+        "method": "median_imputation"
+      },
+      {
+        "action": "remove_outliers",
+        "column": "pressure",
+        "clipped": 24,
+        "lower": 983.6535,
+        "upper": 1042.5488,
+        "sigma": 3.0
+      },
+      {
+        "action": "remove_outliers",
+        "column": "voltage",
+        "clipped": 8,
+        "lower": 2.8146,
+        "upper": 3.7863,
+        "sigma": 3.0
+      }
+    ],
+    "rows_before": 5015,
+    "rows_after": 5000,
+    "rows_removed": 15
+  },
+  "validation_after": {
+    "issues": [
+      {
+        "check": "outliers",
+        "message": "Column 'pressure' has 24 outliers beyond 3.0\u03c3",
+        "severity": "warning",
+        "detail": {
+          "column": "pressure",
+          "count": 24,
+          "mean": 1013.1008,
+          "std": 9.7847
+        },
+        "fix_hint": "remove_outliers"
+      },
+      {
+        "check": "outliers",
+        "message": "Column 'voltage' has 17 outliers beyond 3.0\u03c3",
+        "severity": "warning",
+        "detail": {
+          "column": "voltage",
+          "count": 17,
+          "mean": 3.2995,
+          "std": 0.1013
+        },
+        "fix_hint": "remove_outliers"
+      }
+    ],
+    "summary": {
+      "schema": {
+        "check": "schema",
+        "columns": [
+          "timestamp",
+          "temperature",
+          "pressure",
+          "humidity",
+          "voltage",
+          "sensor_id",
+          "status"
+        ],
+        "missing": [],
+        "extra": [
+          "voltage",
+          "status",
+          "humidity",
+          "sensor_id"
+        ],
+        "dtypes": {
+          "timestamp": "object",
+          "temperature": "float64",
+          "pressure": "float64",
+          "humidity": "float64",
+          "voltage": "float64",
+          "sensor_id": "object",
+          "status": "object"
+        },
+        "status": "pass"
+      },
+      "nulls": {
+        "check": "nulls",
+        "null_pcts": {
+          "timestamp": 0.0,
+          "temperature": 0.0,
+          "pressure": 0.0,
+          "humidity": 0.0,
+          "voltage": 0.0,
+          "sensor_id": 0.0,
+          "status": 0.0
+        },
+        "failing_cols": [],
+        "status": "pass"
+      },
+      "ranges": {
+        "check": "ranges",
+        "rules": {
+          "temperature": [
+            -50,
+            60
+          ],
+          "pressure": [
+            900,
+            1100
+          ]
+        },
+        "violations": {},
+        "status": "pass"
+      },
+      "duplicates": {
+        "check": "duplicates",
+        "count": 0,
+        "status": "pass"
+      },
+      "outliers": {
+        "check": "outliers",
+        "counts": {
+          "temperature": 0,
+          "pressure": 24,
+          "humidity": 0,
+          "voltage": 17
+        },
+        "sigma": 3.0,
+        "status": "warning"
+      },
+      "drift": {
+        "check": "drift",
+        "details": {
+          "temperature": {
+            "mean_first": 22.5801,
+            "mean_second": 22.713,
+            "shift_sigma": 0.025
+          },
+          "pressure": {
+            "mean_first": 1012.925,
+            "mean_second": 1013.2766,
+            "shift_sigma": 0.036
+          },
+          "humidity": {
+            "mean_first": 50.2984,
+            "mean_second": 50.5417,
+            "shift_sigma": 0.021
+          },
+          "voltage": {
+            "mean_first": 3.3002,
+            "mean_second": 3.2987,
+            "shift_sigma": 0.015
+          }
+        },
+        "flagged": [],
+        "status": "pass"
+      }
+    },
+    "passed": true,
+    "shape": [
+      5000,
+      7
+    ],
+    "critical_count": 0,
+    "warning_count": 2
+  },
+  "model_metrics": {
+    "target": "temperature",
+    "rmse": 1.4936,
+    "r2": 0.9043,
+    "mae": 0.826,
+    "train_samples": 3992,
+    "test_samples": 998,
+    "passed": true,
+    "gates": {
+      "rmse_pass": true,
+      "r2_pass": true,
+      "rmse_threshold": 5.0,
+      "r2_threshold": 0.5
+    },
+    "predictions": {
+      "actual": [
+        14.76,
+        14.81,
+        14.53,
+        14.26,
+        13.39,
+        13.33,
+        13.16,
+        12.99,
+        23.38,
+        23.38,
+        13.85,
+        23.38,
+        14.63,
+        14.43,
+        14.16,
+        14.31,
+        14.58,
+        23.38,
+        15.72,
+        15.29,
+        15.12,
+        15.36,
+        15.77,
+        16.08,
+        15.86,
+        15.06,
+        14.48,
+        14.59,
+        14.72,
+        14.12,
+        14.16,
+        14.48,
+        13.88,
+        14.47,
+        14.27,
+        14.9,
+        14.57,
+        14.03,
+        13.83,
+        13.84,
+        13.69,
+        13.65,
+        13.89,
+        13.86,
+        13.88,
+        13.08,
+        13.41,
+        13.47,
+        14.37,
+        13.91
+      ],
+      "predicted": [
+        15.644795139961527,
+        15.722139388385314,
+        15.848271044637146,
+        15.09662013788215,
+        14.690339510369272,
+        14.134684693064298,
+        13.645004120370725,
+        13.371120615044344,
+        13.130357528166625,
+        13.497809545833055,
+        17.15185643154723,
+        16.542168658154615,
+        16.49173189966908,
+        15.465904778474954,
+        16.873689520710975,
+        14.511649863026486,
+        16.093881559221387,
+        15.782539302739277,
+        16.832450118640704,
+        17.384468743814132,
+        17.15197632688482,
+        15.888907557387073,
+        15.526318359877335,
+        16.09202076062795,
+        16.7199567813246,
+        15.911914817203526,
+        15.13366129915129,
+        15.178843529502634,
+        15.30268371796055,
+        15.434582046230922,
+        14.287575676075756,
+        14.953220261756488,
+        14.848557554469611,
+        15.000236106828554,
+        14.866373881402042,
+        14.496446870099268,
+        14.93374693069698,
+        15.83702899471573,
+        14.861868829522475,
+        15.134903301097344,
+        15.62825533571046,
+        14.170073262066767,
+        15.00761201142368,
+        14.42611871354351,
+        14.369950381254402,
+        14.857993448239148,
+        14.78452424160777,
+        13.623727815618164,
+        14.096824234263133,
+        15.253833859798139
+      ]
+    }
+  }
+}
