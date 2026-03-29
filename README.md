@@ -1,4 +1,4 @@
-# Infineon AI Data Quality Agent
+# AI-Sensor- Data Quality Agent
 
 > **Built by Tibin Regi** — BSc Robotics & AI, University of Klagenfurt  
 > Demonstration project for the **Infineon Technologies AI & Data Engineering Internship**
